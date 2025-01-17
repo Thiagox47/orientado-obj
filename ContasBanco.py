@@ -66,6 +66,18 @@ class ContaCorrente:
         conta_destino._transacoes.append((valor, conta_destino._saldo, ContaCorrente._data_hora()))
 
 
+class CartaoCredito:
+
+
+    def __init__(self):
+        self.numero = None
+        self.titular = None
+        self.validade = None
+        self.cod_seguranca = None
+        self.limite = None
+        self.conta_corrente = None
+
+
 # Criando conta
 conta_Thiago = ContaCorrente('Thiago', '111.222.333-45', 123, 12345)
 
