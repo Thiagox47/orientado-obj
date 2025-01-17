@@ -1,5 +1,6 @@
 from datetime import datetime
 import pytz
+from random import randint
 
 
 class ContaCorrente:
@@ -7,8 +8,8 @@ class ContaCorrente:
     Cria uma objeto ContaCorrente para gerenciar as contas dos clientes.
 
     Atributos:
-        _nome (str): _Nome do cliente
-        _cpf (str): _CPF do cliente. Deve ser inserido com pontos e traços
+        nome (str): Nome do cliente
+        cpf (str): CPF do cliente. Deve ser inserido com pontos e traços
         _agencia (str): _Agencia responsável pela conta do cliente
         _num_conta (str): Número da conta corrente do cliente
         _saldo (int): _Saldo disponivel na conta do cliente
@@ -23,14 +24,15 @@ class ContaCorrente:
         horario_Br = datetime.now(fuso_Br)
         return horario_Br.strftime('%d/%m/%Y %H:%M:%S')
 
-    def __init__(self, _nome, _cpf, _agencia, _num_conta):
-        self._nome = _nome
-        self._cpf = _cpf
+    def __init__(self, nome, cpf, _agencia, _num_conta):
+        self.nome = nome
+        self.cpf = cpf
         self._saldo = 0
         self._limite = None
         self._agencia = _agencia
         self._num_conta = _num_conta
         self._transacoes = []
+        self.cartoes = []
 
     def consultar__saldo(self):
         print('Seu _saldo atual é R${:,.2f}'.format(self._saldo))
@@ -67,42 +69,33 @@ class ContaCorrente:
 
 
 class CartaoCredito:
+        
 
+    @staticmethod
+    def _data_hora():
+        fuso_Br = pytz.timezone('Brazil/East')
+        horario_Br = datetime.now(fuso_Br)
+        return horario_Br
 
-    def __init__(self):
-        self.numero = None
-        self.titular = None
-        self.validade = None
-        self.cod_seguranca = None
-        self.limite = None
-        self.conta_corrente = None
+    def __init__(self, titular, conta_corrente):
+        self.numero = randint(1000000000000000, 9999999999999999)
+        self.titular = titular
+        self.validade = '{}/{}'.format(CartaoCredito._data_hora().month, CartaoCredito._data_hora().year + 4)
+        self.cod_seguranca = '{}{}{}'.format(randint(0, 9),randint(0, 9),randint(0, 9))
+        self.limite = 1000
+        self._senha = '1234'
+        self.conta_corrente = conta_corrente
+        conta_corrente.cartoes.append(self)
 
+    @property
+    def senha(self):
+        return self._senha
+    
+    @senha.setter
+    def senha(self, valor):
+        if len(valor) == 4 and valor.isnumeric():
+            self._senha = valor
+        else:
+            print('Nova senha invalida!')
 
-# Criando conta
-conta_Thiago = ContaCorrente('Thiago', '111.222.333-45', 123, 12345)
-
-# Mostrar _saldo
-conta_Thiago.consultar__saldo()
-
-# Depositando dinheiro na conta
-conta_Thiago.depositar(10000)
-
-# Sacar dinheiro na conta
-conta_Thiago.sacar_dinheiro(1000)
-
-print('_Saldo Final')
-conta_Thiago.consultar__saldo()
-conta_Thiago.consultar__limite_chequesespecial()
-
-print('-' *20)
-conta_Thiago.consultar_historico__transacoes()
-
-print('-' *20)
-conta_Joao = ContaCorrente('João', '222.333.444-56', 5555, 4444444)
-conta_Thiago.transferir(1000,conta_Joao)
-
-conta_Thiago.consultar__saldo()
-conta_Joao.consultar__saldo()
-
-conta_Thiago.consultar_historico__transacoes()
-conta_Joao.consultar_historico__transacoes()
+            
