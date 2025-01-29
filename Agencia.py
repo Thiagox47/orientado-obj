@@ -1,3 +1,5 @@
+from random import randint
+
 class Agencia:
 
 
@@ -26,23 +28,52 @@ class Agencia:
     
 
 class AgenciaVirtual(Agencia):
-    pass
+    
+    def __init__(self, site, telefone, cnpj):
+        self.site = site
+        super().__init__(telefone, cnpj, 1000)
+        self.caixa = 1000000
+        self.caixa_paypal = 0
 
+    def depositar_paypal(self, valor):
+        self.caixa -= valor
+        self.caixa_paypal += valor
+
+    def sacar_paypal(self, valor):
+        self.caixa_paypal -= valor
+        self.caixa += valor
 
 class AgenciaComum(Agencia):
-    pass
+    
+    def __init__(self, telefone, cnpj):
+        super().__init__(telefone, cnpj, numero=randint(1001, 9999))
+        self.caixa = 1000000
+
 
 
 class AgenciaPremium(Agencia):
-    pass
+    
+    def __init__(self, telefone, cnpj):
+        super().__init__(telefone, cnpj, numero=randint(1001, 9999))
+        self.caixa = 10000000
 
+    def adicionar_cliente(self, nome, cpf, patrimonio):
+        if patrimonio > 1000000:
+            super().adicionar_cliente(nome, cpf, patrimonio)
+        else:
+            print("O cliente não possui patrimonio minimo necessario para entrar na Agencia Premium")
 
-agencia1 = Agencia(22222233333, 20000000000, 2567)
+if __name__ == '__main__':
 
-agencia_virtual = AgenciaVirtual(2222222221444, 45000000000, 6574)
-agencia_virtual.caixa = 15000
-agencia_virtual.verificar_caixa()
+    agencia1 = Agencia(22222233333, 20000000000, 2567)
 
-agencia_premium = AgenciaPremium(1265498746315, 46870000000, 6789)
-agencia_premium.caixa = 5000000
-agencia_premium.verificar_caixa()
+    agencia_virtual = AgenciaVirtual('www', 2222222221444, 45000000000, )
+    agencia_comum = AgenciaComum(262626566262, 5444897481121)
+    agencia_premium = AgenciaPremium(262626658422, 5444897481121)
+
+    agencia_virtual.depositar_paypal(20000)
+    print(agencia_virtual.caixa)
+    print(agencia_virtual.caixa_paypal)
+
+    agencia_premium.adicionar_cliente('Thiago', 15674632645964, 500000000)
+    print(agencia_premium.clientes)
